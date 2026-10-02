@@ -1,0 +1,18 @@
+# ==============================================================================
+# CLASH TITAN 2.0 - Requirements & Dependencies
+# Created by Zodi4c
+# ==============================================================================
+
+# GUI Framework & Native System Appearance
+customtkinter>=6.0.0
+darkdetect>=0.8.0
+
+# Computer Vision & Vector Asset Rendering
+Pillow>=10.0.0
+opencv-python>=4.8.0
+numpy>=1.24.0
+
+# Hardware-Level Input & OS Windows DirectInput
+pyautogui>=0.9.54
+keyboard>=0.13.5
+pywin32>=306

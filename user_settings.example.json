@@ -1,0 +1,11 @@
+{
+    "language": "EN",
+    "font_theme": "Minimalist Lüks (Outfit)",
+    "color_theme": "Crimson Titan",
+    "attacks_before_break": 10,
+    "stage2_wait_seconds": 75,
+    "stage2_finish_wait_seconds": 50,
+    "clicks_per_troop_slot": 4,
+    "stage2_mode": "AUTO",
+    "stage1_troop_slots": 6
+}

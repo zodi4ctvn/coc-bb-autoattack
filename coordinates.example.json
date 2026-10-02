@@ -1,0 +1,75 @@
+{
+    "attack_button": {
+        "x": 759,
+        "y": 680
+    },
+    "find_now_button": {
+        "x": 1591,
+        "y": 534
+    },
+    "hero_slot": {
+        "x": 886,
+        "y": 701
+    },
+    "first_troop_slot": null,
+    "troop_slot_spacing": 75,
+    "troop_slot_1": {
+        "x": 975,
+        "y": 699
+    },
+    "troop_slot_2": null,
+    "troop_slot_3": null,
+    "troop_slot_4": null,
+    "troop_slot_5": null,
+    "troop_slot_6": null,
+    "troop_slot_7": null,
+    "troop_slot_8": null,
+    "deploy_zone_1": {
+        "x": 1083,
+        "y": 111
+    },
+    "deploy_zone_2": {
+        "x": 1761,
+        "y": 281
+    },
+    "deploy_zone_3": {
+        "x": 762,
+        "y": 332
+    },
+    "deploy_zone_4": {
+        "x": 1787,
+        "y": 554
+    },
+    "deploy_zone_5": {
+        "x": 500,
+        "y": 200
+    },
+    "deploy_zone_6": {
+        "x": 700,
+        "y": 100
+    },
+    "deploy_zone_7": {
+        "x": 350,
+        "y": 680
+    },
+    "return_home_button": {
+        "x": 1265,
+        "y": 659
+    },
+    "zoom_out_point": {
+        "x": 1004,
+        "y": 600
+    },
+    "collect_elixir_1": {
+        "x": 1200,
+        "y": 300
+    },
+    "collect_elixir_2": {
+        "x": 1400,
+        "y": 800
+    },
+    "collect_elixir_3": {
+        "x": 1600,
+        "y": 150
+    }
+}

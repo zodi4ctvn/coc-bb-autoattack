@@ -1,0 +1,10 @@
+{
+    "python.defaultInterpreterPath": "C:\\Users\\Zodi4c\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
+    "python.analysis.extraPaths": [
+        "c:/Users/Zodi4c/Desktop/autoattackbot",
+        "C:/Users/Zodi4c/AppData/Local/Programs/Python/Python311/Lib/site-packages"
+    ],
+    "python.autoComplete.extraPaths": [
+        "C:/Users/Zodi4c/AppData/Local/Programs/Python/Python311/Lib/site-packages"
+    ]
+}
