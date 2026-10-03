@@ -223,18 +223,33 @@ class BuilderBase2Bot:
         return False
 
     def deploy_unit_to_zone(self, slot_key, target_zone, label="", zone_num=1):
-        """Bir birlik veya hero yuvasını seçer ve belirlenen spesifik saldırı yerine 1 tıkla bırakır."""
+        """Bir birlik veya hero yuvasını seçer ve belirlenen saldırı yerine bırakır (Tekli Hero için 1, Birlikler için ayarlı tık sayısı kadar)."""
         if not self.running:
             return False
         pt = self.coords.get(slot_key)
         if not pt or pt.get("x") is None:
             return False
 
-        self.log(f"-> {label or slot_key} seçiliyor -> {zone_num}. Saldırı Noktasına bırakılıyor...")
+        # Hero slotu her zaman 1 tık ile sahaya sürülür; birlik slotları ise kullanıcının seçtiği tık sayısı kadar dökülür (Okçu 4'lü, vb.)
+        is_hero = "hero" in slot_key.lower()
+        clicks_needed = 1 if is_hero else int(self.user_prefs.get("clicks_per_troop_slot", BATTLE_SETTINGS.get("clicks_per_troop_slot", 4)))
+
+        if is_hero:
+            self.log(f"-> {label or slot_key} seçiliyor -> {zone_num}. Saldırı Noktasına bırakılıyor (1 tık)...")
+        else:
+            self.log(f"-> {label or slot_key} seçiliyor -> {zone_num}. Saldırı Noktasına bırakılıyor ({clicks_needed} tık)...")
+
         human_click(pt["x"], pt["y"], jitter=False, delay_after=False)
-        time.sleep(random.uniform(0.20, 0.30))
-        human_quick_tap(target_zone["x"], target_zone["y"])
-        time.sleep(random.uniform(0.25, 0.38))
+        time.sleep(random.uniform(0.20, 0.28))
+
+        for c_idx in range(clicks_needed):
+            if not self.running:
+                break
+            human_quick_tap(target_zone["x"], target_zone["y"])
+            if c_idx < clicks_needed - 1:
+                time.sleep(random.uniform(0.12, 0.22))
+
+        time.sleep(random.uniform(0.22, 0.32))
         return True
 
     def deploy_stage(self, stage_num=1):
@@ -416,36 +431,65 @@ class BuilderBase2Bot:
                     self.log(f"2. Aşama sonrası bekleme süresi ({stage2_finish_wait} sn) doldu. Savaş sonuçlandırılıyor...")
                     break
 
+            # Savaş izlenirken arada bir doğal insansı mikro-gezinti yap (%15 ihtimalle)
+            if random.random() < 0.15:
+                idle_micro_drift()
+
             if not self.safe_sleep(0.5):
                 return
 
         if not self.running:
             return
 
-        # Savaş bitti: Ana köye dönüş için 'Tamam / Eve Dön' butonunu çift tıkla (Loot/Yıldız pencerelerini kapatır)
-        self.log("Savaş bitti. 'Tamam / Eve Dön' butonlarına basılarak köye dönülüyor...")
-        # Önce görsel olarak Eve Dön butonunu ara
-        home_pos = None
-        try:
-            home_match = self.vision.find_template("return_home_button", confidence=0.48)
-            if home_match:
-                home_pos = (home_match[0], home_match[1])
-        except Exception:
-            pass
+        # Savaş bitti: Ana köye dönüş için 'Tamam / Eve Dön' butonlarını ve 6 Yıldız / Zafer pencerelerini yönet
+        self.log("Savaş bitti. 'Tamam / Eve Dön' ve varsa 6 Yıldız zafer pencereleri kontrol ediliyor...")
 
-        if not home_pos:
-            return_btn = self.coords.get("return_home_button")
-            if return_btn and return_btn.get("x"):
-                home_pos = (return_btn["x"], return_btn["y"])
+        # 6 Yıldız tamamlanma bonusu / Sonuç / Eve Dön pencerelerini kapatmak için çoklu kontrol döngüsü
+        for attempt in range(4):
+            if not self.running:
+                break
 
-        if home_pos:
-            # 1. Tık: Savaş Sonuç Ekranı 'Tamam / Eve Dön'
-            human_click(home_pos[0], home_pos[1], jitter=False, delay_after=False)
-            if not self.safe_sleep(random.uniform(1.2, 1.8)):
-                return
-            # 2. Tık: Ganimet / Kupa Özeti Ekranı 'Tamam'
-            human_click(home_pos[0], home_pos[1], jitter=False, delay_after=False)
-            self.safe_sleep(random.uniform(1.5, 2.5))
+            clicked_any = False
+
+            # 1. Öncelik: 6 Yıldız veya Savaş Sonu 'Tamam' Butonu Kontrolü
+            try:
+                ok_match = self.vision.find_template("ok_button", confidence=0.70, return_best_score=True)
+                if ok_match[0] is not None and ok_match[2] >= 0.70:
+                    score_pct = int(ok_match[2] * 100)
+                    self.log(f"-> [✓ BULUNDU] Ekranda yeşil 'Tamam' butonu tespit edildi! (Benzerlik: %{score_pct}, X={ok_match[0]}, Y={ok_match[1]}) basılıyor...")
+                    human_click(ok_match[0], ok_match[1], jitter=False, delay_after=False)
+                    clicked_any = True
+                    self.safe_sleep(random.uniform(1.2, 1.8))
+            except Exception:
+                pass
+
+            # 2. Öncelik: 'Eve Dön' Butonu Görsel Kontrolü
+            try:
+                home_match = self.vision.find_template("return_home_button", confidence=0.68, return_best_score=True)
+                if home_match[0] is not None and home_match[2] >= 0.68:
+                    score_pct = int(home_match[2] * 100)
+                    self.log(f"-> [✓ BULUNDU] Ekranda 'Eve Dön' butonu tespit edildi! (Benzerlik: %{score_pct}, X={home_match[0]}, Y={home_match[1]}) basılıyor...")
+                    human_click(home_match[0], home_match[1], jitter=False, delay_after=False)
+                    clicked_any = True
+                    self.safe_sleep(random.uniform(1.2, 1.8))
+            except Exception:
+                pass
+
+            # 3. Eğer ilk denemede görsel bulunamadıysa kayıtlı return_home_button koordinatına tıkla
+            if not clicked_any and attempt == 0:
+                return_btn = self.coords.get("return_home_button")
+                if return_btn and return_btn.get("x"):
+                    self.log(f"-> Kayıtlı 'Eve Dön' koordinatına basılıyor (X={return_btn['x']}, Y={return_btn['y']})...")
+                    human_click(return_btn["x"], return_btn["y"], jitter=False, delay_after=False)
+                    self.safe_sleep(random.uniform(1.2, 1.8))
+                    human_click(return_btn["x"], return_btn["y"], jitter=False, delay_after=False)
+                    self.safe_sleep(random.uniform(1.2, 1.8))
+                break
+
+            if not clicked_any:
+                break
+
+        self.safe_sleep(random.uniform(1.2, 1.8))
 
     def zoom_out_village(self):
         """
@@ -497,12 +541,13 @@ class BuilderBase2Bot:
         active_loot_variants = [
             "bubble_village",           # 1. Öncelik: Kullanıcının köyündeki birebir balta/ganimet balonu (%100)
             "cart_village",             # 2. Öncelik: Kullanıcının köyündeki birebir araba (%100)
-            "elixir_cart_axes_full",    # 3. Öncelik: Kullanıcının yeni yüklediği baltalı+iksirli araba (%90)
-            "axes_head",                # 4. Öncelik: Yeni arabanın balta simgesi (%82)
-            "axes_bubble",              # 5. Öncelik: Çapraz balta simgesi
-            "elixir_bubble",            # 6. Öncelik: Mor iksir damlası balonu
-            "elixir_cart_axes",         # 7. Öncelik: Baltalı araba
-            "elixir_cart",              # 8. Öncelik: İksirli araba
+            "elixir_cart_wood_sword",   # 3. Öncelik: Tahta araba + kılıçlı varyant (%95)
+            "elixir_cart_axes_full",    # 4. Öncelik: Baltalı+iksirli araba (%90)
+            "axes_head",                # 5. Öncelik: Yeni arabanın balta simgesi (%82)
+            "axes_bubble",              # 6. Öncelik: Çapraz balta simgesi
+            "elixir_bubble",            # 7. Öncelik: Mor iksir damlası balonu
+            "elixir_cart_axes",         # 8. Öncelik: Baltalı araba
+            "elixir_cart",              # 9. Öncelik: İksirli araba
         ]
 
         # Güven eşiği: 0.65 (Köydeki bomba, bina veya tuzakları %100 eler, arabayı anında yakalar)
@@ -667,6 +712,16 @@ class BuilderBase2Bot:
         preselected_stage2 = self.manual_stage2_triggered
         self.manual_stage2_triggered = False
         self.manual_finish_triggered = False
+
+        # Savaş öncesi köy ekranında açık kalmış olabilecek 6 yıldız / bonus / Tamam pencerelerini temizle
+        try:
+            ok_match = self.vision.find_template("ok_button", confidence=0.72)
+            if ok_match:
+                self.log(f"-> [TEMİZLİK] Köy ekranında kalan 'Tamam' butonuna basılıyor (X={ok_match[0]}, Y={ok_match[1]})...")
+                human_click(ok_match[0], ok_match[1], jitter=False, delay_after=False)
+                self.safe_sleep(1.0)
+        except Exception:
+            pass
 
         # 1. Saldır Butonuna Bas
         if not self.click_point("attack_button", "Sol alttaki 'Saldır' butonu"):

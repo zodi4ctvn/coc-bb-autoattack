@@ -89,10 +89,15 @@ class VisionDetector:
         hwnd = coc_window["hwnd"]
         rect = coc_window["rect"]
 
-        # Pencereyi öne getir
+        # Pencereyi boyutunu ve konumunu bozmadan öne getir
         if HAS_WIN32 and win32gui and win32con:
             try:
-                win32gui.ShowWindow(hwnd, win32con.SW_RESTORE)
+                # Eğer pencere simge durumuna küçültülmüşse (minimized) geri yükle; 
+                # aksi halde mevcut boyutunu (büyütülmüş veya özel boyutlandırılmış) asla bozma!
+                if win32gui.IsIconic(hwnd):
+                    win32gui.ShowWindow(hwnd, win32con.SW_RESTORE)
+                else:
+                    win32gui.ShowWindow(hwnd, win32con.SW_SHOW)
                 win32gui.SetForegroundWindow(hwnd)
             except Exception:
                 pass
@@ -137,8 +142,8 @@ class VisionDetector:
 
         conf_threshold = confidence if confidence is not None else VISION_CONFIDENCE
 
-        # UI Butonları (Eve Dön, Topla, Kapat) sabit arayüz öğeleridir; harita gibi minyatür boyutlara (0.28x) küçülemez!
-        is_ui_element = any(k in template_name for k in ["return_home", "collect_button", "close_button"])
+        # UI Butonları (Eve Dön, Tamam, Topla, Kapat) sabit arayüz öğeleridir; harita gibi minyatür boyutlara (0.28x) küçülemez!
+        is_ui_element = any(k in template_name for k in ["return_home", "ok_button", "collect_button", "close_button"])
 
         if is_ui_element:
             # Sadece doğal buton boyutları (±%20)

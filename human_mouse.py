@@ -54,8 +54,14 @@ def fast_human_move(target_x, target_y):
     dy = target_y - start_y
     dist = math.hypot(dx, dy)
 
-    if dist < 15:
+    if dist < 8:
         user32.SetCursorPos(int(target_x), int(target_y))
+        return
+    elif dist < 25:
+        # Yakın mesafelerde de anlık ışınlanma yerine 3 adımlı mikro-kayma
+        for t in (0.35, 0.75, 1.0):
+            user32.SetCursorPos(int(start_x + dx * t), int(start_y + dy * t))
+            time.sleep(0.008)
         return
 
     # %35 İhtimalle hedefi biraz aşma (Overshoot)
@@ -118,11 +124,13 @@ def human_click(x=None, y=None, jitter=True, delay_after=True):
         time.sleep(max(0.35, random.gauss(0.65, 0.12)))
 
 def human_quick_tap(x, y):
-    """Birlikleri bırakırken haritaya seri ve değişken hızda tıklar."""
-    jx, jy = get_jittered_point(x, y, radius=16)
-    user32.SetCursorPos(jx, jy)
-    raw_mouse_click(press_time=random.uniform(0.075, 0.110))
-    time.sleep(random.uniform(0.28, 0.38))
+    """
+    Birlikleri bırakırken haritaya insansı hızda gider ve tıklar.
+    Asla ışınlanma (teleport) yapmaz; doğal Bézier kavisli mikro-hareketle hedefe varıp tıklar.
+    """
+    jx, jy = get_jittered_point(x, y, radius=14)
+    fast_human_move(jx, jy)
+    raw_mouse_click(press_time=random.uniform(0.065, 0.098))
 
 def idle_micro_drift():
     """Savaş izlenirken farenin robot gibi heykel kalmasını önleyen insani hafif gezinti."""

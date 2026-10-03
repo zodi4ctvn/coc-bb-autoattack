@@ -225,16 +225,14 @@ def calculate_ban_risk(break_freq, stage2_delay, clicks, mode, lang="TR"):
     elif stage2_delay > 120:
         risk += 6
 
-    # 3. Yuva Başına Tıklama
-    if clicks in (3, 4):
+    # 3. Yuva Başına Tıklama (1: Tekli birlikler/Pekka/Dev, 3-4: Okçu vb., 5+: Yüksek adetli birlikler)
+    if clicks in (1, 2, 3, 4):
         pass
     elif clicks == 5:
-        risk += 10
+        risk += 8
     elif clicks >= 6:
-        risk += 20
+        risk += 16
         warnings.append(get_text("risk_tip_clicks", lang, clicks=clicks))
-    elif clicks <= 2:
-        risk += 5
 
     risk = max(2, min(95, risk))
     safety = 100 - risk
@@ -1373,8 +1371,8 @@ class LuxuryBotDashboard(ctk.CTk):
         self.slider_clicks_per_troop = self.create_slider_control(
             card_battle,
             "slider_clicks_title",
-            val_min=2,
-            val_max=6,
+            val_min=1,
+            val_max=8,
             current=self.user_prefs.get("clicks_per_troop_slot", BATTLE_SETTINGS.get("clicks_per_troop_slot", 4)),
             unit_key="unit_clicks",
             on_change=lambda _: self.auto_save_settings()
