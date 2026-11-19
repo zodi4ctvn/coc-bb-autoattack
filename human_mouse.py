@@ -82,7 +82,10 @@ def fast_human_move(target_x, target_y):
     ctrl2_y = start_y + (dest_y - start_y) * random.uniform(0.55, 0.8) + random.randint(-18, 18)
 
     steps = max(8, min(14, int(dist / 40)))
-    step_delay = random.uniform(0.012, 0.020)
+    move_dur_min = float(ANTI_BAN.get("mouse_move_duration_min", 0.20))
+    move_dur_max = float(ANTI_BAN.get("mouse_move_duration_max", 0.40))
+    total_move_dur = random.uniform(move_dur_min, max(move_dur_min, move_dur_max))
+    step_delay = max(0.006, total_move_dur / steps)
 
     for i in range(1, steps + 1):
         t = i / steps
@@ -103,8 +106,12 @@ human_move = fast_human_move
 def raw_mouse_click(press_time=None):
     """Windows donanım düzeyinde (DirectInput) sol tıklama."""
     if press_time is None:
-        # İnsan basış süresi: Gauss dağılımı (~95ms ortalama)
-        press_time = max(0.055, random.gauss(0.095, 0.018))
+        # İnsan basış süresi: ANTI_BAN aralığına bağlı Gauss dağılımı
+        p_min = float(ANTI_BAN.get("click_press_duration_min", 0.07))
+        p_max = float(ANTI_BAN.get("click_press_duration_max", 0.13))
+        p_mid = (p_min + p_max) / 2.0
+        p_std = max(0.005, (p_max - p_min) / 4.0)
+        press_time = max(p_min, min(p_max, random.gauss(p_mid, p_std)))
 
     user32.mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0)
     time.sleep(press_time)
@@ -121,7 +128,11 @@ def human_click(x=None, y=None, jitter=True, delay_after=True):
     raw_mouse_click()
 
     if delay_after:
-        time.sleep(max(0.35, random.gauss(0.65, 0.12)))
+        d_min = float(ANTI_BAN.get("action_delay_min", 0.6))
+        d_max = float(ANTI_BAN.get("action_delay_max", 1.2))
+        d_mid = (d_min + d_max) / 2.0
+        d_std = max(0.05, (d_max - d_min) / 4.0)
+        time.sleep(max(d_min, min(d_max, random.gauss(d_mid, d_std))))
 
 def human_quick_tap(x, y):
     """

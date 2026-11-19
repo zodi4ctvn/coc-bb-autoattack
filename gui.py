@@ -73,7 +73,7 @@ ctk.set_default_color_theme("green")
 
 # CTk ScalingTracker: her 100ms DPI kontrolü + alpha flicker = sürükleme lag'i
 # Devre dışı bırak — tek monitör/sabit DPI için gerekli değil
-ctk.deactivate_automatic_dpi_awareness = True
+ctk.deactivate_automatic_dpi_awareness()
 
 HERO_AND_TROOPS = [
     "hero_slot",
@@ -287,6 +287,7 @@ class LuxuryBotDashboard(ctk.CTk):
 
         self.coords = load_coordinates()
         self.bot_process = None
+        self._bot_session_active = False
         self.recording_key = None
         self.attack_counter = 0
         self.session_start = None
@@ -295,11 +296,6 @@ class LuxuryBotDashboard(ctk.CTk):
 
         # Görüntü İşleme & Şablon Dedektörü
         self.vision = VisionDetector()
-
-        # Banner Görsellerini Yükle
-        self.img_battle_banner = None
-        self.img_village_banner = None
-        self.load_banner_assets()
 
         self.coord_badges = {}
         self.record_buttons = {}
@@ -340,6 +336,7 @@ class LuxuryBotDashboard(ctk.CTk):
 
         self.build_ui()
         self.update_calib_status_label()
+        self.protocol("WM_DELETE_WINDOW", self.on_close)
         self.bind("<Escape>", lambda event: self.handle_esc_press())
         self.bind("<Delete>", lambda event: self.handle_delete_press())
         self.bind("<BackSpace>", lambda event: self.handle_delete_press())
@@ -373,35 +370,6 @@ class LuxuryBotDashboard(ctk.CTk):
                 time.sleep(0.03)
 
         threading.Thread(target=listener, daemon=True).start()
-
-    def load_banner_assets(self):
-        """Builder Base 2.0 ve Gece Köyü Banner Görsellerini Pillow ile yükler."""
-        if not HAS_PIL:
-            return
-
-        try:
-            battle_path = os.path.join(BASE_DIR, "assets", "images", "battle_banner.jpg")
-            if os.path.exists(battle_path):
-                raw_battle = Image.open(battle_path)
-                self.img_battle_banner = ctk.CTkImage(
-                    light_image=raw_battle,
-                    dark_image=raw_battle,
-                    size=(670, 95)
-                )
-        except Exception as e:
-            print("Battle banner load error:", e)
-
-        try:
-            village_path = os.path.join(BASE_DIR, "assets", "images", "village_banner.jpg")
-            if os.path.exists(village_path):
-                raw_village = Image.open(village_path)
-                self.img_village_banner = ctk.CTkImage(
-                    light_image=raw_village,
-                    dark_image=raw_village,
-                    size=(670, 95)
-                )
-        except Exception as e:
-            print("Village banner load error:", e)
 
     def set_color_theme(self, theme_key):
         """
@@ -2006,10 +1974,12 @@ class LuxuryBotDashboard(ctk.CTk):
             self.show_missing_calibration_dialog(missing)
             return
 
+        self._bot_session_active = True
         self.btn_main_start.configure(state="disabled", fg_color="#064e3b")
         self.btn_main_stop.configure(state="normal", fg_color="#e11d48")
 
-        status_text = "● 2. AŞAMA DEVREDE" if is_stage2_direct else get_text("status_busy", self.lang)
+        stage2_label = "● STAGE 2 ACTIVE" if self.lang == "EN" else "● 2. AŞAMA DEVREDE"
+        status_text = stage2_label if is_stage2_direct else get_text("status_busy", self.lang)
         self.status_indicator.configure(text=status_text, image=self.status_dot_busy, text_color="#38bdf8")
 
         self.session_start = time.time()
@@ -2041,7 +2011,8 @@ class LuxuryBotDashboard(ctk.CTk):
             v = VisionDetector()
             rect = v.get_game_window_rect()
             if rect:
-                self.append_log("[✓] Oyun penceresi tespit edildi ve odaklandı.")
+                win_msg = "[✓] Game window detected and focused." if self.lang == "EN" else "[✓] Oyun penceresi tespit edildi ve odaklandı."
+                self.append_log(win_msg)
         except Exception:
             pass
 
@@ -2131,11 +2102,34 @@ class LuxuryBotDashboard(ctk.CTk):
         self.on_bot_finished()
 
     def on_bot_finished(self):
+        if not self._bot_session_active:
+            return
+        self._bot_session_active = False
         self.btn_main_start.configure(state="normal", fg_color="#10b981")
         self.btn_main_stop.configure(state="disabled", fg_color="#4c0519")
         self.status_indicator.configure(text=get_text("status_ready", self.lang), image=self.status_dot_ready, text_color="#34d399")
         msg = "[*] Session ended." if self.lang == "EN" else "[*] Oturum sona erdi."
         self.append_log(msg)
+
+    def on_close(self):
+        """Pencere kapatılırken çalışan bot alt sürecini güvenle sonlandırır."""
+        proc = self.bot_process
+        if proc and proc.poll() is None:
+            try:
+                ctypes.windll.user32.mouse_event(0x0004, 0, 0, 0, 0)
+            except Exception:
+                pass
+            try:
+                proc.terminate()
+                proc.wait(timeout=1.5)
+            except Exception:
+                try:
+                    proc.kill()
+                except Exception:
+                    pass
+        self.bot_process = None
+        self._bot_session_active = False
+        self.destroy()
 
 
 if __name__ == "__main__":

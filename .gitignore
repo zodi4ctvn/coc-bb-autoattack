@@ -34,8 +34,7 @@ env.bak/
 venv.bak/
 
 # IDE & Editor files
-.vscode/*
-!.vscode/settings.json
+.vscode/
 .idea/
 *.swp
 *.swo

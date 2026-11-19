@@ -122,7 +122,8 @@ class BuilderBase2Bot:
         except Exception as e:
             print(f"[!] Keyboard listener error: {e}")
 
-        # 2. Windows Kernel Düzeyinde Kesintisiz Donanım Dinleyicisi (Farklı pencere / Yönetici modu olsa dahi yakalar)
+        # 2. Windows Kernel Düzeyinde Kesintisiz Donanım Dinleyicisi (Acil Durdurma: Q / ESC)
+        # Not: Pause ('p') yalnızca yukarıdaki keyboard.add_hotkey ile yönetilir (çift tetiklemeyi önler).
         def _hardware_key_poller():
             user32 = ctypes.windll.user32
             while True:
@@ -131,10 +132,6 @@ class BuilderBase2Bot:
                     if bool(user32.GetAsyncKeyState(0x51) & 0x8000) or bool(user32.GetAsyncKeyState(0x1B) & 0x8000):
                         stop_bot()
                         break
-                    # 0x50 = 'P' tuşu
-                    if bool(user32.GetAsyncKeyState(0x50) & 0x8000):
-                        toggle_pause()
-                        time.sleep(0.35)  # debounce
                 except Exception:
                     pass
                 time.sleep(0.02)
@@ -268,7 +265,9 @@ class BuilderBase2Bot:
         if BATTLE_SETTINGS.get("has_hero", True):
             units.append(("hero_slot", f"{stage_num}. Aşama Hero"))
 
-        total_troops = 6 if stage_num == 1 else 8
+        stage1_slots = max(1, int(self.user_prefs.get("stage1_troop_slots", BATTLE_SETTINGS.get("stage1_troop_slots", 6))))
+        reinforcement_slots = max(0, int(BATTLE_SETTINGS.get("stage2_reinforcement_slots", 2)))
+        total_troops = stage1_slots if stage_num == 1 else min(8, stage1_slots + reinforcement_slots)
         for i in range(1, total_troops + 1):
             units.append((f"troop_slot_{i}", f"[{i}/{total_troops}] {i}. Birlik"))
 
@@ -512,8 +511,8 @@ class BuilderBase2Bot:
             try:
                 rect = self.vision.get_game_window_rect()
                 if rect:
-                    target_x = (rect[0] + rect[2]) // 2
-                    target_y = (rect[1] + rect[3]) // 2
+                    target_x = rect[0] + rect[2] // 2
+                    target_y = rect[1] + rect[3] // 2
             except Exception:
                 pass
 
@@ -550,9 +549,14 @@ class BuilderBase2Bot:
             "elixir_cart",              # 9. Öncelik: İksirli araba
         ]
 
+        # Tek tarama turu için yalnızca 1 ekran görüntüsü al ve tüm şablonlarda yeniden kullan
+        screen = self.vision.capture_screen()
+        if screen is None:
+            return (None, None, 0.0, best_name)
+
         # Güven eşiği: 0.65 (Köydeki bomba, bina veya tuzakları %100 eler, arabayı anında yakalar)
         for tmpl in active_loot_variants:
-            m = self.vision.find_template(tmpl, confidence=0.65, return_best_score=True)
+            m = self.vision.find_template(tmpl, confidence=0.65, return_best_score=True, screen=screen)
             if m[2] > best_score:
                 best_score = m[2]
                 best_name = tmpl
@@ -603,7 +607,6 @@ class BuilderBase2Bot:
         time.sleep(0.20)
 
         # 2. ADIM: İksir Kutusunu Bul ve Tıkla (Üst ve Sağ Üst Odaklı Arama)
-        cart_clicked = False
         cart_x, cart_y, best_score, best_tmpl = self.scan_for_cart()
 
         # Eğer ilk bakışta görünmediyse imleçle haritayı sağ üst ve üst tarafları açacak şekilde kaydır!
@@ -648,10 +651,9 @@ class BuilderBase2Bot:
             score_pct = int(best_score * 100)
             self.log(f"-> [✓ BULUNDU] İksir kutusu ekranda tespit edildi! ({best_tmpl}, Benzerlik: %{score_pct}, X={cart_x}, Y={cart_y}) tıklanıyor...")
             human_click(cart_x, cart_y, jitter=False, delay_after=False)
-            cart_clicked = True
         else:
             score_pct = int(best_score * 100)
-            self.log(f"[UYARI] İksir kutusu tespit edilemedi (En yüksek benzerlik: %{score_pct}, Gereken: %62).")
+            self.log(f"[UYARI] İksir kutusu tespit edilemedi (En yüksek benzerlik: %{score_pct}, Gereken: %65).")
             self.log("[GÜVENLİK] Yanlış binalara/tuzaklara tıklamamak için doğrudan savaşa geçiliyor.")
             return
 
@@ -772,7 +774,9 @@ class BuilderBase2Bot:
         """Anti-ban mola sistemi (Her 10-12 saldırıda bir 2-3 dakika mola)."""
         if not self.running:
             return
-        max_attacks = ANTI_BAN["attacks_before_break"]
+        max_attacks = int(ANTI_BAN.get("attacks_before_break", 11))
+        if max_attacks <= 0:
+            return
         if self.attack_count > 0 and (self.attack_count % max_attacks == 0):
             break_seconds = random.randint(
                 ANTI_BAN["break_duration_min_seconds"],

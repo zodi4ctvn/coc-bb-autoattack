@@ -121,7 +121,7 @@ class VisionDetector:
                 print(f"[Vision Error] Screen grab failed: {e}")
                 return None
 
-    def find_template(self, template_name, region=None, confidence=None, multi_scale=True, return_best_score=False):
+    def find_template(self, template_name, region=None, confidence=None, multi_scale=True, return_best_score=False, screen=None):
         """
         Şablon görselini ekranda arar.
         Farklı pencere ve ekran boyutlarını tolere etmek için multi-scale (0.25x - 1.30x) ve
@@ -131,12 +131,19 @@ class VisionDetector:
         if template_name not in self.cached_templates:
             filepath = os.path.join(self.templates_dir, f"{template_name}.png")
             if os.path.exists(filepath):
-                self.cached_templates[template_name] = cv2.imread(filepath)
+                loaded = cv2.imread(filepath)
+                if loaded is None:
+                    return (None, None, 0.0) if return_best_score else None
+                self.cached_templates[template_name] = loaded
             else:
                 return (None, None, 0.0) if return_best_score else None
 
         template = self.cached_templates[template_name]
-        screen = self.capture_screen(region=region)
+        if template is None:
+            return (None, None, 0.0) if return_best_score else None
+
+        if screen is None:
+            screen = self.capture_screen(region=region)
         if screen is None:
             return (None, None, 0.0) if return_best_score else None
 
@@ -225,13 +232,26 @@ class VisionDetector:
         if template_name not in self.cached_templates:
             filepath = os.path.join(self.templates_dir, f"{template_name}.png")
             if os.path.exists(filepath):
-                self.cached_templates[template_name] = cv2.imread(filepath)
+                loaded = cv2.imread(filepath)
+                if loaded is None:
+                    return []
+                self.cached_templates[template_name] = loaded
             else:
                 return []
 
         template = self.cached_templates[template_name]
-        th, tw = template.shape[:2]
+        if template is None:
+            return []
+
         screen = self.capture_screen(region=region)
+        if screen is None:
+            return []
+
+        th, tw = template.shape[:2]
+        sh, sw = screen.shape[:2]
+        if th > sh or tw > sw:
+            return []
+
         conf_threshold = confidence if confidence is not None else VISION_CONFIDENCE
 
         result = cv2.matchTemplate(screen, template, cv2.TM_CCOEFF_NORMED)
@@ -283,6 +303,8 @@ class VisionDetector:
         h = min(scr_h - y1, crop_size)
 
         screen = self.capture_screen(region=(x1, y1, w, h))
+        if screen is None:
+            return None
         out_path = os.path.join(self.templates_dir, f"{template_name}.png")
         cv2.imwrite(out_path, screen)
         self.cached_templates[template_name] = screen
