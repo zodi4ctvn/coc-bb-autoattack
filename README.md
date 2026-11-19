@@ -21,11 +21,71 @@
 
 <div align="center">
 
-[![Demo Video](https://img.youtube.com/vi/J9xLcqWQFR0/maxresdefault.jpg)](https://youtu.be/J9xLcqWQFR0)
+<img src="assets/showcase/en/01_dashboard.png" alt="Clash Titan 2.0 — Control Dashboard" width="900"/>
 
-*Click to watch the full showcase & tutorial on YouTube*
+*Clash Titan 2.0 — Control Dashboard (English UI)*
 
 </div>
+
+---
+
+## Interface Showcase
+
+Explore every screen and built-in safety system of **Clash Titan 2.0** (full **English** & **Türkçe** live-switching interface):
+
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <img src="assets/showcase/en/01_dashboard.png" alt="Control Dashboard" width="100%"/>
+      <br/>
+      <b>1. Control Dashboard</b><br/>
+      <sub>Live attack counter, session timer, DirectInput status HUD, quick hotkeys (<code>Q</code> / <code>F2</code> / <code>F3</code>), and real-time event feed.</sub>
+    </td>
+    <td align="center" width="50%">
+      <img src="assets/showcase/en/02_calibration_top.png" alt="Slots & Calibration — Core Slots" width="100%"/>
+      <br/>
+      <b>2. Slots &amp; Calibration (Hero, Troops &amp; Map)</b><br/>
+      <sub>One-click Record (<code>SPACE</code> / Left Click), live Test click verification, and instant slot deletion for all 23 points.</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <img src="assets/showcase/en/03_calibration_bottom.png" alt="Slots & Calibration — Stage 2 & Elixir Cart" width="100%"/>
+      <br/>
+      <b>3. Slots &amp; Calibration (Stage 2 &amp; Elixir Cart)</b><br/>
+      <sub>Stage 2 reinforcements, Return Home / OK, Zoom-Out anchor point, and automated Elixir Cart collection points.</sub>
+    </td>
+    <td align="center" width="50%">
+      <img src="assets/showcase/en/04_settings_safe.png" alt="Anti-Ban & Strategy — Ultra Stealth" width="100%"/>
+      <br/>
+      <b>4. Anti-Ban &amp; Strategy (Ultra Stealth Preset)</b><br/>
+      <sub>Real-time heuristic safety score, one-click stealth preset, battle pacing sliders, break algorithm, and instant language switch.</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <img src="assets/showcase/en/05_settings_risk.png" alt="Anti-Ban & Strategy — High Risk Warning" width="100%"/>
+      <br/>
+      <b>5. Live Anti-Ban Risk Analyzer (High-Risk Alert)</b><br/>
+      <sub>Dynamically flags aggressive break intervals, rushed Stage 2 delays, or excessive micro-clicks in real time.</sub>
+    </td>
+    <td align="center" width="50%">
+      <img src="assets/showcase/en/06_logs.png" alt="Live Terminal" width="100%"/>
+      <br/>
+      <b>6. Live Terminal (Full Battle &amp; Event Log)</b><br/>
+      <sub>Detailed timestamped telemetry for window lock, Bézier overshoot, stage transitions, and humanized cooldowns.</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" colspan="2">
+      <img src="assets/showcase/en/07_guardrail_modal.png" alt="Missing Slot Safety Guardrail Modal" width="65%"/>
+      <br/>
+      <b>7. Missing Slot Safety Guardrail</b><br/>
+      <sub>Blocks battle launch when any required coordinate is missing, lists every unassigned slot, and redirects to calibration.</sub>
+    </td>
+  </tr>
+</table>
+
 ---
 
 ## Overview

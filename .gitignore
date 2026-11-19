@@ -62,7 +62,7 @@ dist/
 # Log files
 *.log
 pyarmor.bug.log
-# Video files (use YouTube instead)
+# Video files
 *.mov
 *.mp4
 *.avi

@@ -18,7 +18,76 @@
 </div>
 
 
-## Genel Bakışış
+<div align="center">
+
+<img src="assets/showcase/tr/01_dashboard.png" alt="Clash Titan 2.0 — Kontrol Merkezi" width="900"/>
+
+*Clash Titan 2.0 — Kontrol Merkezi (Türkçe Arayüz)*
+
+</div>
+
+---
+
+## Arayüz & Özellik Galerisi
+
+**Clash Titan 2.0** kontrol panelinin tüm sekmelerini ve yerleşik güvenlik mekanizmalarını detaylı inceleyin (**Türkçe** ve **İngilizce** anlık dil geçişi desteklenir):
+
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <img src="assets/showcase/tr/01_dashboard.png" alt="Kontrol Merkezi" width="100%"/>
+      <br/>
+      <b>1. Kontrol Merkezi</b><br/>
+      <sub>Canlı saldırı sayacı, oturum süresi, donanım seviyesi stealth göstergesi, hızlı kısayollar (<code>Q</code> / <code>F2</code> / <code>F3</code>) ve canlı etkinlik akışı.</sub>
+    </td>
+    <td align="center" width="50%">
+      <img src="assets/showcase/tr/02_calibration_top.png" alt="Slot & Kalibrasyon — Temel Yuvalar" width="100%"/>
+      <br/>
+      <b>2. Slot &amp; Kalibrasyon (Hero, Birlikler &amp; Harita)</b><br/>
+      <sub>Tek tıkla Kaydet (<code>SPACE</code> / Sol Tık), canlı Test tıklaması ve 23 nokta için anlık atama yönetimi.</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <img src="assets/showcase/tr/03_calibration_bottom.png" alt="Slot & Kalibrasyon — 2. Aşama & İksir Arabası" width="100%"/>
+      <br/>
+      <b>3. Slot &amp; Kalibrasyon (2. Aşama &amp; İksir Arabası)</b><br/>
+      <sub>2. aşama takviye yuvaları, Eve Dön / Tamam, kamera küçültme odak noktası ve otomatik İksir Arabası toplama noktaları.</sub>
+    </td>
+    <td align="center" width="50%">
+      <img src="assets/showcase/tr/04_settings_safe.png" alt="Anti-Ban & Strateji — Ultra Güvenli" width="100%"/>
+      <br/>
+      <b>4. Anti-Ban &amp; Strateji (Ultra Güvenli Ayar)</b><br/>
+      <sub>Canlı sezgisel güvenlik ölçer, tek tıkla önerilen güvenli preset, savaş zamanlama sürgüleri, mola algoritması ve anlık dil seçimi.</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <img src="assets/showcase/tr/05_settings_risk.png" alt="Anti-Ban & Strateji — Yüksek Risk Uyarısı" width="100%"/>
+      <br/>
+      <b>5. Canlı Anti-Ban Risk Analizörü (Yüksek Risk Uyarısı)</b><br/>
+      <sub>Agresif mola aralıkları, çok erken 2. aşama geçişleri veya aşırı mikro tıklamalar seçildiğinde anında kırmızı risk uyarısı verir.</sub>
+    </td>
+    <td align="center" width="50%">
+      <img src="assets/showcase/tr/06_logs.png" alt="Canlı Terminal" width="100%"/>
+      <br/>
+      <b>6. Canlı Terminal (Tam Saldırı &amp; Hata Günlüğü)</b><br/>
+      <sub>Pencere kilitleme, Bézier sapma, aşama geçişleri ve insansı bekleme süreleri için zaman damgalı detaylı kayıtlar.</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" colspan="2">
+      <img src="assets/showcase/tr/07_guardrail_modal.png" alt="Eksik Tuş Doğrulama Güvenliği" width="65%"/>
+      <br/>
+      <b>7. Eksik Tuş Doğrulama Güvenliği</b><br/>
+      <sub>Zorunlu koordinatlardan herhangi biri eksikse savaşın başlamasını engeller, eksik noktaları listeler ve kalibrasyona yönlendirir.</sub>
+    </td>
+  </tr>
+</table>
+
+---
+
+## Genel Bakış
 
 
 > [!NOTE]
