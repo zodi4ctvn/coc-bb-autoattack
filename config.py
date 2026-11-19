@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Clash Titan 2.0 - yapilandirma dosyasi
-# @author: Zodi4c  |  github.com/Zodi4ctvn
+# @author: zodi4c  |  github.com/zodi4ctvn
 # [INTEGRITY] Bu satir silinirse program baslamaz. / Removing this line will prevent the program from starting.
 # Lisans: Custom Non-Commercial Attribution License (bkz. LICENSE)
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Kontrol paneli - CustomTkinter tabanli GUI
-# @author: Zodi4c  |  github.com/Zodi4ctvn
+# @author: zodi4c  |  github.com/zodi4ctvn
 # [INTEGRITY] Bu satir silinirse program baslamaz. / Removing this line will prevent the program from starting.
 # Lisans: Custom Non-Commercial Attribution License (bkz. LICENSE)
 
@@ -31,7 +31,12 @@ try:
 except ImportError:
     HAS_SOUND = False
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = (
+    os.path.dirname(sys.executable)
+    if getattr(sys, "frozen", False)
+    else os.path.dirname(os.path.abspath(__file__))
+)
+BUNDLE_DIR = getattr(sys, "_MEIPASS", BASE_DIR)
 os.chdir(BASE_DIR)
 
 def register_application_fonts():
@@ -44,7 +49,7 @@ def register_application_fonts():
     if sys.platform.startswith("win"):
         try:
             import ctypes
-            fonts_dir = os.path.join(BASE_DIR, "assets", "fonts")
+            fonts_dir = os.path.join(BUNDLE_DIR, "assets", "fonts")
             if os.path.isdir(fonts_dir):
                 for fname in os.listdir(fonts_dir):
                     if fname.lower().endswith((".ttf", ".otf")):
@@ -255,6 +260,8 @@ def calculate_ban_risk(break_freq, stage2_delay, clicks, mode, lang="TR"):
 
 class LuxuryBotDashboard(ctk.CTk):
     def __init__(self):
+        from integrity import verify_integrity
+        verify_integrity()
         super().__init__()
 
         self.user_prefs = load_user_settings()
@@ -262,6 +269,7 @@ class LuxuryBotDashboard(ctk.CTk):
         locales.ACTIVE_LANG = self.lang
 
         self.title(get_text("app_title", self.lang))
+        self._apply_window_icon()
         self.geometry("980x720")
         self.minsize(960, 670)
         # Sabit Tipografi: Minimalist Lüks (Outfit)
@@ -531,14 +539,14 @@ class LuxuryBotDashboard(ctk.CTk):
 
         self.creator_badge = ctk.CTkButton(
             sidebar_bottom,
-            text="CREATED BY ZODI4C",
+            text="CREATED BY zodi4c",
             font=self.f_brand_sub,
             text_color="#f87171",
             fg_color="transparent",
             hover_color="#1c1117",
             height=24,
             corner_radius=8,
-            command=lambda: webbrowser.open_new_tab("https://github.com/Zodi4ctvn")
+            command=lambda: webbrowser.open_new_tab("https://github.com/zodi4ctvn")
         )
         self.creator_badge.pack(fill="x")
 
@@ -1984,7 +1992,7 @@ class LuxuryBotDashboard(ctk.CTk):
 
         self.session_start = time.time()
         self.append_log("\n" + "="*55)
-        self.append_log(">>> CLASH TITAN 2.0 • Created by Zodi4c")
+        self.append_log(">>> CLASH TITAN 2.0 • Created by zodi4c")
         if is_stage2_direct:
             if self.lang == "EN":
                 self.append_log(">>> DIRECT STAGE 2 ENGINE ACTIVATED (Hero + 8 Troops).")
@@ -2019,7 +2027,10 @@ class LuxuryBotDashboard(ctk.CTk):
         def run_worker():
             proc = None
             try:
-                cmd = [PYTHON_EXE, "-u", BOT_SCRIPT]
+                if getattr(sys, "frozen", False):
+                    cmd = [sys.executable, "--bot-worker"]
+                else:
+                    cmd = [PYTHON_EXE, "-u", BOT_SCRIPT]
                 if extra_args:
                     cmd.extend(extra_args)
                 proc = subprocess.Popen(
@@ -2110,6 +2121,15 @@ class LuxuryBotDashboard(ctk.CTk):
         self.status_indicator.configure(text=get_text("status_ready", self.lang), image=self.status_dot_ready, text_color="#34d399")
         msg = "[*] Session ended." if self.lang == "EN" else "[*] Oturum sona erdi."
         self.append_log(msg)
+
+    def _apply_window_icon(self):
+        icon_path = os.path.join(BUNDLE_DIR, "assets", "clash_titan.ico")
+        if os.path.isfile(icon_path):
+            try:
+                self.iconbitmap(icon_path)
+                self.after(250, lambda: self.iconbitmap(icon_path))
+            except Exception:
+                pass
 
     def on_close(self):
         """Pencere kapatılırken çalışan bot alt sürecini güvenle sonlandırır."""

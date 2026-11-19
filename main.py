@@ -1,17 +1,21 @@
 # -*- coding: utf-8 -*-
 # Clash Titan 2.0 - ana calistirici
-# Copyright (c) 2026 Zodi4c (https://github.com/Zodi4ctvn)
+# Copyright (c) 2026 zodi4c (https://github.com/zodi4ctvn)
 # Lisans: Custom Non-Commercial Attribution License (bkz. LICENSE)
 import sys
 import os
 
-# Calisma dizinini projenin kok dizinine sabitle
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# Calisma dizinini uygulama dizinine sabitle (frozen .exe ve kaynak kod uyumlu)
+BASE_DIR = (
+    os.path.dirname(sys.executable)
+    if getattr(sys, "frozen", False)
+    else os.path.dirname(os.path.abspath(__file__))
+)
 os.chdir(BASE_DIR)
 
 # ---------------------------------------------------------------
 # Attribution Integrity Check — Yazilim koruma katmani
-# Orijinal yazar bilgisi (Zodi4c) silinmis/degistirilmisse dur.
+# Orijinal yazar bilgisi (zodi4c) silinmis/degistirilmisse dur.
 # ---------------------------------------------------------------
 from integrity import verify_integrity
 verify_integrity()
@@ -22,9 +26,9 @@ def print_banner():
     print("""
 ==================================================================
           CLASH TITAN 2.0 -- BUILDER BASE AUTOMATION
-                    Created by Zodi4c
+                    Created by zodi4c
               DirectInput Heuristic Anti-Detection
-       (c) 2026 Zodi4c | github.com/Zodi4ctvn
+       (c) 2026 zodi4c | github.com/zodi4ctvn
 ==================================================================
     """)
 
@@ -39,6 +43,15 @@ def main():
     ClashTitan.bat --cli     -> Konsol Tabanli Botu Baslatir
     ClashTitan.bat --wizard  -> Kalibrasyon Sihirbazini Baslatir
         """)
+        return
+
+    if "--bot-worker" in args:
+        from bot import BuilderBase2Bot
+        bot = BuilderBase2Bot()
+        if "--stage2-only" in args:
+            bot.run_stage2_standalone()
+        else:
+            bot.start()
         return
 
     if "--cli" in args:

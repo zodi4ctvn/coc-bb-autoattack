@@ -4,7 +4,7 @@
 
 **[🇹🇷 Türkçe](#-türkçe) · [🇬🇧 English](#-english)**
 
-[![Author](https://img.shields.io/badge/Author-Zodi4c-10B981?style=for-the-badge)](https://github.com/zodi4ctvn)
+[![Author](https://img.shields.io/badge/Author-zodi4c-10B981?style=for-the-badge)](https://github.com/zodi4ctvn)
 ![Python Version](https://img.shields.io/badge/Python-3.11%2B-blue?style=for-the-badge&logo=python&logoColor=white)
 ![Platform](https://img.shields.io/badge/Platform-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)
 ![UI](https://img.shields.io/badge/UI-CustomTkinter-10B981?style=for-the-badge)
@@ -12,7 +12,7 @@
 ![Status](https://img.shields.io/badge/Status-Maintained-success?style=for-the-badge)
 
 **Hardware-level, anti-ban autonomous Builder Base 2.0 attack automation suite for Clash of Clans on Windows.**  
-**Created by [Zodi4c](https://github.com/zodi4ctvn).**
+**Created by [zodi4c](https://github.com/zodi4ctvn).**
 
 </div>
 
@@ -123,7 +123,7 @@ coc-bb-autoattack/
 ├── main.py                     # Ana uygulama başlatıcı (GUI / CLI / Wizard)
 ├── gui.py                      # CustomTkinter kontrol paneli
 ├── bot.py                      # Ana savaş otomasyon motoru
-├── integrity.py                # Zodi4c atıf bütünlük doğrulama modülü
+├── integrity.py                # zodi4c atıf bütünlük doğrulama modülü
 ├── locales.py                  # Çift dilli lokalizasyon paketi (TR / EN)
 ├── human_mouse.py              # DirectInput & Bézier fare motoru
 ├── icons.py                    # Vektörel ikon üretim motoru (supersampled)
@@ -142,24 +142,23 @@ coc-bb-autoattack/
 
 ### Kurulum
 
-#### Gereksinimler
+#### 1. Tek Dosya `.exe` ile Çalıştır (Önerilen — Kurulum Gerektirmez)
+1. [Releases](https://github.com/zodi4ctvn/coc-bb-autoattack/releases) sayfasından **`ClashTitan.exe`** dosyasını indirin.
+2. Ayrı bir klasöre koyup çift tıklayın (Python veya ek kütüphane kurmanız gerekmez).
+
+#### 2. Kaynak Koddan Çalıştır (Opsiyonel)
 - **İşletim Sistemi:** Windows 10 veya Windows 11 (64-bit)
 - **Python:** Python 3.11 veya daha yenisi
 
-#### 1. Depoyu İndirin
 ```bash
 git clone https://github.com/zodi4ctvn/coc-bb-autoattack.git
 cd coc-bb-autoattack
-```
-
-#### 2. Kütüphaneleri Yükleyin
-```bash
 python -m pip install -r requirements.txt
 ```
 
 ### Hızlı Başlangıç
 
-- **Grafik Arayüzü (Önerilen):** `ClashTitan.bat` dosyasına çift tıklayın veya terminalden çalıştırın:
+- **Grafik Arayüzü (Önerilen):** `ClashTitan.exe` veya `ClashTitan.bat` dosyasına çift tıklayın, ya da terminalden çalıştırın:
   ```bash
   python main.py
   ```
@@ -203,7 +202,7 @@ Bu proje **Özel Ticari Olmayan Atıf Lisansı (Custom Non-Commercial Attributio
 **Temel kısıtlamalar:**
 - ✅ Kişisel ve eğitim amaçlı kullanım serbesttir
 - ❌ Ticari kullanım **yasaktır**
-- ❌ Zodi4c yazar bilgisini silmek veya değiştirmek **yasaktır**
+- ❌ zodi4c yazar bilgisini silmek veya değiştirmek **yasaktır**
 - ❌ Projeyi kendi projeniz olarak dağıtmak **yasaktır**
 - ❌ Başka bir lisans altında yayımlamak **yasaktır**
 
@@ -316,7 +315,7 @@ coc-bb-autoattack/
 ├── main.py                     # Primary application entrypoint (GUI / CLI / Wizard)
 ├── gui.py                      # CustomTkinter control dashboard
 ├── bot.py                      # Core state machine & autonomous battle runner
-├── integrity.py                # Zodi4c attribution integrity verification module
+├── integrity.py                # zodi4c attribution integrity verification module
 ├── locales.py                  # Bilingual localization engine (English & Türkçe)
 ├── human_mouse.py              # Hardware-level DirectInput & Bézier mouse engine
 ├── icons.py                    # Vector icon generation engine (supersampled)
@@ -335,24 +334,23 @@ coc-bb-autoattack/
 
 ### Installation
 
-#### Prerequisites
+#### 1. Run Single-File `.exe` (Recommended — No Setup Required)
+1. Download **`ClashTitan.exe`** from the [Releases](https://github.com/zodi4ctvn/coc-bb-autoattack/releases) page.
+2. Place it in its own folder and double-click to launch (no Python or manual dependency setup required).
+
+#### 2. Run from Source (Optional)
 - **Operating System:** Windows 10 / Windows 11 (x64)
 - **Python:** Python 3.11 or newer
 
-#### 1. Clone the Repository
 ```bash
 git clone https://github.com/zodi4ctvn/coc-bb-autoattack.git
 cd coc-bb-autoattack
-```
-
-#### 2. Install Dependencies
-```bash
 python -m pip install -r requirements.txt
 ```
 
 ### Quick Start
 
-- **Run the Dashboard (Recommended):** Double-click `ClashTitan.bat` or run:
+- **Run the Dashboard (Recommended):** Double-click `ClashTitan.exe` or `ClashTitan.bat`, or run:
   ```bash
   python main.py
   ```
@@ -396,7 +394,7 @@ Key parameters can be adjusted via the UI or directly in `config.py`:
 
 ### Author
 
-Created and maintained by **[Zodi4c](https://github.com/zodi4ctvn)**.  
+Created and maintained by **[zodi4c](https://github.com/zodi4ctvn)**.  
 Feedback, contributions, and issues are welcome!
 
 ### License
@@ -408,7 +406,7 @@ This project is licensed under a **Custom Non-Commercial Attribution License**.
 **Key restrictions:**
 - ✅ Personal & educational use is allowed
 - ❌ Commercial use is **prohibited**
-- ❌ Removing or modifying the Zodi4c author credit is **prohibited**
+- ❌ Removing or modifying the zodi4c author credit is **prohibited**
 - ❌ Redistributing as your own project is **prohibited**
 - ❌ Relicensing under any other license is **prohibited**
 

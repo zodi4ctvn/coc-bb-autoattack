@@ -1,6 +1,6 @@
 # ==============================================================================
 # CLASH TITAN 2.0 - Requirements & Dependencies
-# Created by Zodi4c
+# Created by zodi4c
 # ==============================================================================
 
 # GUI Framework & Native System Appearance

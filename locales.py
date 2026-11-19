@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 # TR/EN lokalizasyon paketi
-# @author: Zodi4c  |  github.com/Zodi4ctvn
+# @author: zodi4c  |  github.com/zodi4ctvn
 # [INTEGRITY] Bu satir silinirse program baslamaz. / Removing this line will prevent the program from starting.
 # Lisans: Custom Non-Commercial Attribution License (bkz. LICENSE)
 
 STRINGS = {
     "TR": {
         # Başlık ve Üst Bilgi
-        "app_title": "CLASH TITAN 2.0 • Created by Zodi4c",
+        "app_title": "CLASH TITAN 2.0 • Created by zodi4c",
         "brand_name": " CLASH TITAN",
-        "brand_sub": "Builder Base 2.0 • by Zodi4c",
-        "credit_footer": "CREATED BY ZODI4C",
+        "brand_sub": "Builder Base 2.0 • by zodi4c",
+        "credit_footer": "CREATED BY zodi4c",
         "status_ready": " SİSTEM HAZIR",
         "status_busy": " SALDIRIDA...",
         "status_stopped": " DURDURULDU",
@@ -145,10 +145,10 @@ STRINGS = {
     
     "EN": {
         # Title and Header
-        "app_title": "CLASH TITAN 2.0 • Created by Zodi4c",
+        "app_title": "CLASH TITAN 2.0 • Created by zodi4c",
         "brand_name": " CLASH TITAN",
-        "brand_sub": "Builder Base 2.0 • by Zodi4c",
-        "credit_footer": "CREATED BY ZODI4C",
+        "brand_sub": "Builder Base 2.0 • by zodi4c",
+        "credit_footer": "CREATED BY zodi4c",
         "status_ready": " SYSTEM READY",
         "status_busy": " ATTACKING...",
         "status_stopped": " STOPPED",

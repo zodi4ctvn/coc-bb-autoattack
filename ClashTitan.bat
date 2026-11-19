@@ -1,7 +1,7 @@
 @echo off
 setlocal enabledelayedexpansion
 chcp 65001 >nul
-title Clash Titan 2.0 - Created by Zodi4c
+title Clash Titan 2.0 - Created by zodi4c
 
 :: Set Working Directory to Script Location
 cd /d "%~dp0"

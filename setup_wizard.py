@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Kalibrasyon sihirbazi - ilk kurulum icin (23-slot modern format)
-# @author: Zodi4c  |  github.com/Zodi4ctvn
+# @author: zodi4c  |  github.com/zodi4ctvn
 # Lisans: Custom Non-Commercial Attribution License (bkz. LICENSE)
 
 import os
@@ -15,7 +15,11 @@ try:
 except ImportError:
     HAS_SOUND = False
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = (
+    os.path.dirname(sys.executable)
+    if getattr(sys, "frozen", False)
+    else os.path.dirname(os.path.abspath(__file__))
+)
 CONFIG_COORDS_FILE = os.path.join(BASE_DIR, "coordinates.json")
 
 DEFAULT_COORDINATES = {
@@ -101,9 +105,11 @@ def wait_for_pointer(step_num, total_steps, target_desc, countdown=4):
     return {"x": pos.x, "y": pos.y}
 
 def run_calibration_wizard():
+    from integrity import verify_integrity
+    verify_integrity()
     print("""
 ==================================================================
-   CLASH TITAN 2.0 — KURULUM SİHİRBAZI • Created by Zodi4c
+   CLASH TITAN 2.0 — KURULUM SİHİRBAZI • Created by zodi4c
 ==================================================================
 Bu sihirbaz 19 zorunlu noktayı sırayla kaydeder (modern 23-slot şeması).
 Opsiyonel 4 nokta (zoom_out_point ve collect_elixir_1..3) istenirse

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Ana bot motoru - Builder Base 2.0 saldirilari
-# @author: Zodi4c  |  github.com/Zodi4ctvn
+# @author: zodi4c  |  github.com/zodi4ctvn
 # [INTEGRITY] Bu satir silinirse program baslamaz. / Removing this line will prevent the program from starting.
 # Lisans: Custom Non-Commercial Attribution License (bkz. LICENSE)
 
@@ -13,11 +13,11 @@ import threading
 import ctypes
 import keyboard
 
-# Windows konsolunda Türkçe kod sayfası (cp1254) Unicode crashlerini önle ve satır bazlı tamponlama yap
-if hasattr(sys.stdout, "reconfigure"):
+if sys.stdout and hasattr(sys.stdout, "reconfigure"):
     try:
         sys.stdout.reconfigure(encoding="utf-8", errors="replace", line_buffering=True)
-        sys.stderr.reconfigure(encoding="utf-8", errors="replace", line_buffering=True)
+        if sys.stderr and hasattr(sys.stderr, "reconfigure"):
+            sys.stderr.reconfigure(encoding="utf-8", errors="replace", line_buffering=True)
     except Exception:
         pass
 
@@ -26,12 +26,18 @@ from human_mouse import human_move, human_click, human_quick_tap, random_delay, 
 from setup_wizard import load_coordinates
 from vision import VisionDetector
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = (
+    os.path.dirname(sys.executable)
+    if getattr(sys, "frozen", False)
+    else os.path.dirname(os.path.abspath(__file__))
+)
 SETTINGS_FILE = os.path.join(BASE_DIR, "user_settings.json")
 CMD_FILE = os.path.join(BASE_DIR, "bot_command.txt")
 
 class BuilderBase2Bot:
     def __init__(self):
+        from integrity import verify_integrity
+        verify_integrity()
         self.running = False
         self.paused = False
         self.attack_count = 0
@@ -796,7 +802,7 @@ class BuilderBase2Bot:
     def start(self):
         print("""
 ==================================================================
-   CLASH TITAN 2.0 — BUILDER BASE BOT • Created by Zodi4c
+   CLASH TITAN 2.0 — BUILDER BASE BOT • Created by zodi4c
 ==================================================================
 * Durdurmak için istediğin an klavyeden 'q' tuşuna bas.
 * Duraklatmak / Devam ettirmek için 'p' tuşuna bas.

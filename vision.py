@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 # Goruntu isleme modulu - OpenCV tabanli
-# @author: Zodi4c  |  github.com/Zodi4ctvn
+# @author: zodi4c  |  github.com/zodi4ctvn
 # [INTEGRITY] Bu satir silinirse program baslamaz. / Removing this line will prevent the program from starting.
 # Lisans: Custom Non-Commercial Attribution License (bkz. LICENSE)
 
 import os
+import sys
+import shutil
 import cv2
 import numpy as np
 import pyautogui
@@ -20,8 +22,41 @@ except ImportError:
     win32con = None
     HAS_WIN32 = False
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = (
+    os.path.dirname(sys.executable)
+    if getattr(sys, "frozen", False)
+    else os.path.dirname(os.path.abspath(__file__))
+)
+BUNDLE_DIR = getattr(sys, "_MEIPASS", BASE_DIR)
 DEFAULT_TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
+
+
+def _imread_unicode(filepath):
+    try:
+        data = np.fromfile(filepath, dtype=np.uint8)
+        if data.size == 0:
+            return None
+        return cv2.imdecode(data, cv2.IMREAD_COLOR)
+    except Exception:
+        return None
+
+
+def _sync_bundled_templates(target_dir):
+    bundled_dir = os.path.join(BUNDLE_DIR, "templates")
+    if os.path.abspath(bundled_dir) == os.path.abspath(target_dir):
+        return
+    if not os.path.isdir(bundled_dir):
+        return
+    os.makedirs(target_dir, exist_ok=True)
+    for filename in os.listdir(bundled_dir):
+        if filename.lower().endswith((".png", ".jpg", ".jpeg")):
+            dst = os.path.join(target_dir, filename)
+            if not os.path.exists(dst):
+                try:
+                    shutil.copy2(os.path.join(bundled_dir, filename), dst)
+                except OSError:
+                    pass
+
 
 class VisionDetector:
     def __init__(self, templates_dir=None):
@@ -31,6 +66,9 @@ class VisionDetector:
 
     def load_templates(self):
         """templates klasöründeki tüm png dosyalarını önbelleğe alır."""
+        if self.templates_dir == DEFAULT_TEMPLATES_DIR:
+            _sync_bundled_templates(self.templates_dir)
+
         if not os.path.exists(self.templates_dir):
             os.makedirs(self.templates_dir, exist_ok=True)
             return
@@ -39,8 +77,7 @@ class VisionDetector:
             if filename.lower().endswith((".png", ".jpg", ".jpeg")):
                 name = os.path.splitext(filename)[0]
                 filepath = os.path.join(self.templates_dir, filename)
-                # BGR formatında yükle
-                template_img = cv2.imread(filepath)
+                template_img = _imread_unicode(filepath)
                 if template_img is not None:
                     self.cached_templates[name] = template_img
 
